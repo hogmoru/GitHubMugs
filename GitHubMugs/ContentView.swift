@@ -126,43 +126,51 @@ struct DetailView: View {
 
 struct MugView: View {
     var selectedMug: Mug
+    @State private var funkyEyes = true
     
     var body: some View {
-        VStack {
+        Form {
+            Toggle(isOn: $funkyEyes) {
+                Text("Funky eyes")
+            }.padding()
             Text("\(selectedMug.username)")
-            ImageViewContainer(imageUrl: selectedMug.avatarURL)
+            ImageViewContainer(imageUrl: selectedMug.avatarURL, funkyEyes: funkyEyes)
         }.navigationBarTitle(Text("Mug"))
     }
 }
 
 struct ImageViewContainer: View {
-    @ObservedObject var remoteImageURL: RemoteImageURL
+    @ObservedObject var imageSupplier: FunkyImageSupplier
 
-    init(imageUrl: String) {
-        remoteImageURL = RemoteImageURL(imageURL: imageUrl)
+    init(imageUrl: String, funkyEyes: Bool) {
+        imageSupplier = FunkyImageSupplier(imageURL: imageUrl, funkyEyes: funkyEyes)
     }
 
     var body: some View {
-        Image(uiImage: UIImage(data: remoteImageURL.data) ?? UIImage())
+        Image(uiImage: imageSupplier.uiImage)
             .scaledToFit()
     }
 }
 
-class RemoteImageURL: ObservableObject {
+class FunkyImageSupplier: ObservableObject {
     let objectWillChange = ObservableObjectPublisher()
     
-    var data = Data() {
+    var uiImage = UIImage() {
         didSet {
             objectWillChange.send()
         }
     }
     
-    init(imageURL: String) {
+    init(imageURL: String, funkyEyes: Bool) {
         guard let url = URL(string: imageURL) else { return }
 
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else { return }
-            DispatchQueue.main.async { self.data = data }
+            var image = UIImage(data: data)!
+            if (funkyEyes) {
+                image = MugDecorator.faceOverlayImageFrom(image)
+            }
+            DispatchQueue.main.async { self.uiImage = image }
         }.resume()
     }
 }

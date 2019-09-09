@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  GitHubMugs
+
+  Created by Hugues Moreau on 09/09/2019.
+  Copyright © 2019 Hugues Moreau. All rights reserved.
+*/
+"master_title" = "GitHub Mugz";
+"search_text" = "Search GitHub usernames";
+"please_select_a_result" = "Please select a result";
+"stop_search" = "Cancel";
+"error" = "Error";
+"searching_%@" = "Searching '%1$@'…";
+"unknown_error" = "Unknown error";

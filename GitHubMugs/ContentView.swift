@@ -120,7 +120,7 @@ struct DetailView: View {
             } else {
                 Text("please_select_a_result")
             }
-        }.navigationBarTitle(Text("Mug"))
+        }.navigationBarTitle(Text(selectedMug?.username ?? "Mug"))
     }
 }
 
@@ -129,13 +129,22 @@ struct MugView: View {
     @State private var funkyEyes = true
     
     var body: some View {
-        Form {
+        VStack {
             Toggle(isOn: $funkyEyes) {
-                Text("Funky eyes")
+                Text("funky_eyes")
             }.padding()
-            Text("\(selectedMug.username)")
             ImageViewContainer(imageUrl: selectedMug.avatarURL, funkyEyes: funkyEyes)
-        }.navigationBarTitle(Text("Mug"))
+            Button(action: self.openWebPage) {
+                Image(systemName: "safari")
+            }
+            Spacer()
+        }.navigationBarTitle(Text("\(selectedMug.username)"))
+    }
+    
+    func openWebPage() {
+        if let url = URL(string: "https://github.com/\(selectedMug.username)") {
+            UIApplication.shared.open(url)
+        }
     }
 }
 
@@ -148,6 +157,7 @@ struct ImageViewContainer: View {
 
     var body: some View {
         Image(uiImage: imageSupplier.uiImage)
+            .resizable()
             .scaledToFit()
     }
 }
@@ -155,7 +165,7 @@ struct ImageViewContainer: View {
 class FunkyImageSupplier: ObservableObject {
     let objectWillChange = ObservableObjectPublisher()
     
-    var uiImage = UIImage() {
+    var uiImage = UIImage(systemName: "wand.and.stars")! {
         didSet {
             objectWillChange.send()
         }

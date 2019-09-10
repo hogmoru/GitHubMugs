@@ -6,6 +6,6 @@ My first iOS toy project
 - Show pic
 - Add googly eyes
 
-Featuring SwiftUI, a bit of threading & networking, Core Image face detection…
+Featuring SwiftUI, localization, a bit of threading & networking, Core Image face detection…
 
 ![Screen capture](https://i.imgur.com/nyJCSCz.gif)
